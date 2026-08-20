@@ -26,7 +26,7 @@ export default async function OrdersPage() {
     .eq('buyer_id', user.id)
     .order('created_at', { ascending: false });
 
-  const momoNumber = process.env.NEXT_PUBLIC_MOMO_NUMBER;
+  const momoMerchantCode = process.env.NEXT_PUBLIC_MOMO_MERCHANT_CODE;
   const momoName = process.env.NEXT_PUBLIC_MOMO_NAME;
 
   return (
@@ -53,14 +53,23 @@ export default async function OrdersPage() {
 
                 {order.status === 'invited_to_pay' && (
                   <div className="mt-3 rounded-lg bg-muted p-3 text-sm">
-                    <p className="font-medium mb-1">Pay via Mobile Money</p>
+                    <p className="font-medium mb-1">Pay via MTN MoMoPay</p>
                     <p>
-                      Send {order.currency} {order.amount.toLocaleString()} to{' '}
-                      <span className="font-medium">{momoNumber}</span> ({momoName})
+                      Dial <span className="font-medium">*165*3#</span> on your phone
                     </p>
                     <p className="mt-1">
-                      Include reference <span className="font-medium">{order.order_ref}</span> in the
-                      transaction note.
+                      Enter merchant code <span className="font-medium">{momoMerchantCode}</span> ({momoName})
+                    </p>
+                    <p className="mt-1">
+                      Enter amount{' '}
+                      <span className="font-medium">
+                        {order.currency} {order.amount.toLocaleString()}
+                      </span>
+                      , then your PIN
+                    </p>
+                    <p className="mt-2 text-muted-foreground">
+                      Important: pay using the same phone number registered on your GroupBuy account —
+                      this is how your payment gets matched to order {order.order_ref}.
                     </p>
                     {order.payment_deadline && (
                       <p className="mt-1 text-muted-foreground">
