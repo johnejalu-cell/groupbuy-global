@@ -8,6 +8,12 @@ export async function NavBar() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  let isAdmin = false;
+  if (user) {
+    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+    isAdmin = profile?.role === 'admin';
+  }
+
   return (
     <nav className="border-b border-border">
       <div className="max-w-4xl mx-auto px-6 py-3 flex items-center justify-between">
@@ -25,15 +31,11 @@ export async function NavBar() {
               <Link href="/dashboard/orders" className="hover:underline">
                 My Orders
               </Link>
-              <Link href="/dashboard/products" className="hover:underline">
-                My Products
-              </Link>
-              <Link href="/dashboard/deals" className="hover:underline">
-                My Deals
-              </Link>
-              <Link href="/dashboard" className="hover:underline">
-                Dashboard
-              </Link>
+              {isAdmin && (
+                <Link href="/admin" className="hover:underline font-medium">
+                  Admin
+                </Link>
+              )}
               <form action={signOut}>
                 <button type="submit" className="hover:underline">
                   Sign out
