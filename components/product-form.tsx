@@ -2,7 +2,9 @@
 
 type ProductFormProps = {
   action: (formData: FormData) => void;
+  suppliers: { id: string; name: string }[];
   defaultValues?: {
+    supplier_id?: string;
     title?: string;
     description?: string;
     factory_unit_price?: number;
@@ -14,12 +16,29 @@ type ProductFormProps = {
   };
 };
 
-export function ProductForm({ action, defaultValues }: ProductFormProps) {
+export function ProductForm({ action, suppliers, defaultValues }: ProductFormProps) {
   return (
     <form action={action} className="space-y-4">
       {defaultValues?.image_url && (
         <input type="hidden" name="existing_image_url" value={defaultValues.image_url} />
       )}
+
+      <div>
+        <label className="block text-sm font-medium mb-1">Supplier</label>
+        <select
+          name="supplier_id"
+          required
+          defaultValue={defaultValues?.supplier_id}
+          className="w-full rounded-lg border border-border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+        >
+          <option value="">Select a supplier</option>
+          {suppliers.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.name}
+            </option>
+          ))}
+        </select>
+      </div>
 
       <div>
         <label className="block text-sm font-medium mb-1">Title</label>
@@ -44,16 +63,9 @@ export function ProductForm({ action, defaultValues }: ProductFormProps) {
 
       <div>
         <label className="block text-sm font-medium mb-1">Product Image</label>
-        <input
-          type="file"
-          name="image"
-          accept="image/*"
-          className="w-full text-sm"
-        />
+        <input type="file" name="image" accept="image/*" className="w-full text-sm" />
         {defaultValues?.image_url && (
-          <p className="text-xs text-muted-foreground mt-1">
-            Leave blank to keep the current image.
-          </p>
+          <p className="text-xs text-muted-foreground mt-1">Leave blank to keep the current image.</p>
         )}
       </div>
 
