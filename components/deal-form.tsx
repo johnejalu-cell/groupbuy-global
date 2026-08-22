@@ -45,9 +45,6 @@ export function DealForm({ action, products, defaultValues, lockProduct }: DealF
           defaultValue={defaultValues?.threshold_quantity}
           className="w-full rounded-lg border border-border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
         />
-        <p className="text-xs text-muted-foreground mt-1">
-          How many units must be committed for this deal to activate.
-        </p>
       </div>
 
       <div>
