@@ -50,10 +50,14 @@ export async function placeOrder(dealId: string, formData: FormData) {
     redirect(`/deals/${dealId}?error=Could not place order`);
   }
 
-  await supabase
-    .from('deals')
-    .update({ current_quantity: deal!.current_quantity + quantity })
-    .eq('id', dealId);
+  const { error: rpcError } = await supabase.rpc('increment_deal_quantity', {
+    p_deal_id: dealId,
+    p_qty: quantity,
+  });
+
+  if (rpcError) {
+    redirect(`/deals/${dealId}?error=Order saved but progress bar could not update`);
+  }
 
   revalidatePath(`/deals/${dealId}`);
   redirect(`/deals/${dealId}?ordered=true`);
