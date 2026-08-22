@@ -44,3 +44,28 @@ export async function signOut() {
   await supabase.auth.signOut();
   redirect('/login');
 }
+
+export async function requestPasswordReset(formData: FormData) {
+  const email = formData.get('email') as string;
+  const supabase = createClient();
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+
+  await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${siteUrl}/auth/callback?next=/reset-password`,
+  });
+
+  redirect('/forgot-password?sent=true');
+}
+
+export async function updatePassword(formData: FormData) {
+  const password = formData.get('password') as string;
+  const supabase = createClient();
+
+  const { error } = await supabase.auth.updateUser({ password });
+
+  if (error) {
+    redirect(`/reset-password?error=${encodeURIComponent(error.message)}`);
+  }
+
+  redirect('/dashboard');
+}
